@@ -1096,6 +1096,39 @@ end $$;
 create trigger automation_rule_steps_before before insert or update on public.automation_rule_steps
   for each row execute function app.rule_steps_before();
 
+-- Replaces a sequence atomically. Steps that keep their id keep their history,
+-- so a reminder already produced for a step is never produced again.
+create or replace function public.save_rule_steps(p_rule uuid, p_steps jsonb) returns void
+language plpgsql set search_path = '' as $$
+declare
+  v_org uuid;
+  s jsonb;
+begin
+  select organisation_id into v_org from public.automation_rules where id = p_rule;
+  if v_org is null then perform app.fail('not_found', 'Sequence not found.'); end if;
+  if jsonb_typeof(p_steps) <> 'array' or jsonb_array_length(p_steps) = 0 then
+    perform app.fail('validation', 'A sequence needs at least one step.');
+  end if;
+
+  delete from public.automation_rule_steps
+    where rule_id = p_rule
+      and id not in (select (e ->> 'id')::uuid from jsonb_array_elements(p_steps) e where e ->> 'id' is not null);
+
+  for s in select * from jsonb_array_elements(p_steps) loop
+    if s ->> 'id' is not null then
+      update public.automation_rule_steps set
+        offset_days = (s ->> 'offset_days')::integer, stage = trim(s ->> 'stage'), action = s ->> 'action',
+        channel = (s ->> 'channel')::public.comm_channel, tone = (s ->> 'tone')::public.message_tone,
+        template_id = (s ->> 'template_id')::uuid
+      where id = (s ->> 'id')::uuid and rule_id = p_rule;
+    else
+      insert into public.automation_rule_steps (organisation_id, rule_id, offset_days, stage, action, channel, tone, template_id)
+      values (v_org, p_rule, (s ->> 'offset_days')::integer, trim(s ->> 'stage'), s ->> 'action',
+              (s ->> 'channel')::public.comm_channel, (s ->> 'tone')::public.message_tone, (s ->> 'template_id')::uuid);
+    end if;
+  end loop;
+end $$;
+
 create or replace function app.rules_before_update() returns trigger
 language plpgsql security definer set search_path = '' as $$
 begin

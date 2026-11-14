@@ -71,6 +71,7 @@ grant execute on function
   public.delete_organisation(uuid),
   public.log_audit(uuid, text, text, uuid, jsonb),
   public.save_invoice(uuid, uuid, jsonb, jsonb, boolean),
+  public.save_rule_steps(uuid, jsonb),
   public.record_payment(uuid, uuid, numeric, text, date, text, text, text, jsonb, text, text),
   public.find_duplicate_payments(uuid, uuid, numeric, date, text),
   public.dashboard_summary(uuid, text),

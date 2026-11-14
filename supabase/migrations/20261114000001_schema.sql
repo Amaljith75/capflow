@@ -261,7 +261,8 @@ create table public.automation_rule_steps (
   tone public.message_tone not null default 'professional',
   template_id uuid references public.communication_templates (id) on delete set null,
   created_at timestamptz not null default now(),
-  unique (rule_id, offset_days)
+  -- deferrable so a sequence can be re-ordered inside one transaction
+  constraint automation_rule_steps_rule_offset_key unique (rule_id, offset_days) deferrable initially deferred
 );
 
 create table public.recovery_workflows (
