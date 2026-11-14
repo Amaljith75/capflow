@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:db": "scripts/db-reset-local.sh && cd worker && uv run pytest",
+    "test:e2e": "playwright test --trace off",
+    "check": "npm run typecheck && npm run lint && npm run test"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.6",
@@ -29,6 +34,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/turbopack": "4.3.3",
     "@types/node": "^22.20.5",
     "@types/react": "^19",

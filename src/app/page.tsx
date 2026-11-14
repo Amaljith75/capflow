@@ -33,8 +33,9 @@ export default function LandingPage() {
         </nav>
       </header>
 
-      <section className="relative mx-auto max-w-6xl overflow-hidden px-6 pt-16 pb-24 md:pt-24">
-        <div className="pointer-events-none absolute top-0 -right-40 size-[38rem] rounded-full bg-brand-500/25 blur-3xl" aria-hidden />
+      <div className="relative overflow-hidden">
+      <div className="pointer-events-none absolute -top-20 right-[-10rem] size-[40rem] rounded-full bg-brand-500/20 blur-3xl" aria-hidden />
+      <section className="relative mx-auto max-w-6xl px-6 pt-16 pb-24 md:pt-24">
         <div className="relative grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
           <div>
             <p className="text-xs font-medium tracking-[0.2em] text-brand-300 uppercase">Accounts receivable automation</p>
@@ -62,6 +63,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      </div>
 
       <section className="bg-canvas py-24 text-ink">
         <div className="mx-auto max-w-6xl px-6">
