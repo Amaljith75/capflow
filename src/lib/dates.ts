@@ -53,3 +53,8 @@ export const TIMEZONES = [
   "America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles", "America/Toronto",
   "Australia/Sydney", "UTC",
 ];
+
+/** Milliseconds from now until an ISO timestamp (negative when it is in the past). */
+export function msUntil(iso: string): number {
+  return new Date(iso).getTime() - Date.now();
+}

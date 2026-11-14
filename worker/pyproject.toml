@@ -26,12 +26,12 @@ testpaths = ["tests"]
 markers = ["db: needs a PostgreSQL database with the Capflow migrations applied"]
 
 [tool.ruff]
-line-length = 110
+line-length = 150
 target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "S", "ANN"]
-ignore = ["S101", "ANN401"]
+ignore = ["S101", "ANN401", "E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN", "S"]
@@ -42,5 +42,10 @@ python_version = "3.12"
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["celery.*"]
+module = ["celery.*", "redis.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# Celery's decorators are untyped; the task bodies themselves are fully typed.
+module = ["capflow_worker.tasks"]
+disallow_untyped_decorators = false

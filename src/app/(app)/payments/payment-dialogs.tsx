@@ -79,10 +79,18 @@ export function RecordPaymentDialog({ customers, today, initial, trigger, defaul
     }
   }, [customers]);
 
+  // Opened from an invoice page (?record=1&invoice=…): preload that customer's invoices once.
+  const preloaded = React.useRef(false);
+  const changeOpen = (next: boolean) => {
+    setOpen(next);
+    if (next && initial?.customerId && !customerId) void selectCustomer(initial.customerId);
+  };
   React.useEffect(() => {
-    if (open && initial?.customerId) void selectCustomer(initial.customerId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+    if (preloaded.current || !defaultOpen || !initial?.customerId) return;
+    preloaded.current = true;
+    const timer = setTimeout(() => void selectCustomer(initial.customerId), 0);
+    return () => clearTimeout(timer);
+  }, [defaultOpen, initial, selectCustomer]);
 
   const eligible = invoices.filter((i) => i.currency === currency);
   const amountMinor = minorOrZero(amount);
@@ -120,7 +128,7 @@ export function RecordPaymentDialog({ customers, today, initial, trigger, defaul
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={changeOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent title="Record a payment" description="Record money you have actually received, then apply it to one or more invoices." className="max-w-2xl">
         <form onSubmit={(e) => { e.preventDefault(); void submit(false); }} className="flex flex-col gap-4">

@@ -101,14 +101,15 @@ class Db:
         send: bool = True,
         currency: str = "INR",
         number: str | None = None,
+        issue_days_ago: int = 10,
     ) -> uuid.UUID:
         items = items or [{"description": "Consulting", "quantity": "1", "unit_price": "1000.00", "tax_rate": "18"}]
         return self.val(
             """select save_invoice(%s, null, jsonb_build_object(
                  'customer_id', %s::text, 'invoice_number', %s::text,
-                 'issue_date', (current_date - 10)::text, 'due_date', (current_date + %s::int)::text,
+                 'issue_date', (current_date - %s::int)::text, 'due_date', (current_date + %s::int)::text,
                  'currency', %s::text), %s::jsonb, %s)""",
-            [org, customer, number or f"INV-{uuid.uuid4().hex[:8]}", due_in_days, currency,
+            [org, customer, number or f"INV-{uuid.uuid4().hex[:8]}", issue_days_ago, due_in_days, currency,
              psycopg.types.json.Jsonb(items), send],
         )
 

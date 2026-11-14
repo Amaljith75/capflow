@@ -37,7 +37,7 @@ export function StepsEditor({ ruleId, steps, templates, canEdit }: { ruleId: str
       return;
     }
     setSaving(true);
-    const result = await saveSteps(ruleId, drafts.map(({ key: _key, offset_days, ...rest }) => ({ ...rest, offset_days: Number(offset_days) })));
+    const result = await saveSteps(ruleId, drafts.map((d) => ({ id: d.id, stage: d.stage, action: d.action, channel: d.channel, tone: d.tone, template_id: d.template_id, offset_days: Number(d.offset_days) })));
     setSaving(false);
     if (!result.ok) {
       setError(result.error);

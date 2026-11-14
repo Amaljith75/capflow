@@ -8,7 +8,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { EmptyState, Notice, PageHeader, Tabs } from "@/components/ui/misc";
 import { Table, Td, Th, Tr } from "@/components/ui/table";
 import { getEntitlements, requireContext } from "@/lib/auth/context";
-import { formatDate, formatDateTime } from "@/lib/dates";
+import { formatDate, formatDateTime, msUntil } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { can } from "@/lib/permissions";
 import type { Reminder } from "@/lib/types";
@@ -52,7 +52,7 @@ export default async function RecoveryPage({ searchParams }: { searchParams: Pro
   const followUps = promiseRows.filter((p) => p.status === "broken" && p.follow_up_date);
   const jobFor = (id: string) => (jobs.data ?? []).find((j) => (j.payload as { reminder_id?: string }).reminder_id === id);
   const aiReason = !entitlements.limits.ai_reminders ? "AI personalisation is not included in your plan" : !ai.data?.enabled ? "Enable the AI integration first" : undefined;
-  const overdueQueue = scheduledRows.some((r) => new Date(r.scheduled_for).getTime() < Date.now() - 15 * 60_000);
+  const overdueQueue = scheduledRows.some((r) => msUntil(r.scheduled_for) < -15 * 60_000);
 
   const href = (t: string) => (t === "approvals" ? "/recovery" : `/recovery?tab=${t}`);
   const reminderCard = (r: ReminderRow, actions: React.ReactNode) => (

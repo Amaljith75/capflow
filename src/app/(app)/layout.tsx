@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/app/shell";
 import { Notice } from "@/components/ui/misc";
 import { getEntitlements, requireContext } from "@/lib/auth/context";
-import { formatDateTime } from "@/lib/dates";
+import { formatDateTime, msUntil } from "@/lib/dates";
 import { titleCase } from "@/lib/utils";
 import { signOut } from "../(auth)/actions";
 
@@ -17,7 +17,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   ]);
 
   const trialDays = entitlements.trial_ends_at
-    ? Math.max(0, Math.ceil((new Date(entitlements.trial_ends_at).getTime() - Date.now()) / 86_400_000))
+    ? Math.max(0, Math.ceil(msUntil(entitlements.trial_ends_at) / 86_400_000))
     : 0;
   const planName = entitlements.plan_id ? titleCase(entitlements.plan_id) : "No plan";
   const plan = !entitlements.active
