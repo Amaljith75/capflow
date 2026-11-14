@@ -386,7 +386,9 @@ create or replace function public.log_audit(p_org uuid, p_action text, p_entity_
 returns void language plpgsql security definer set search_path = '' as $$
 begin
   if not app.is_org_member(p_org) then perform app.fail('forbidden', 'Not allowed.'); end if;
-  perform app.audit(p_org, p_action, p_entity_type, p_entity_id, null, null, p_metadata);
+  perform app.audit(p_org, p_action, p_entity_type, p_entity_id,
+    (select id from public.invoices where p_entity_type = 'invoice' and id = p_entity_id and organisation_id = p_org),
+    null, p_metadata);
 end $$;
 
 -- ---------------------------------------------------------------------------

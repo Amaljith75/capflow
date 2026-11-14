@@ -1,26 +1,72 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Capflow design tokens — light, calm fintech surface with a deep green accent. */
+@theme {
+  --color-canvas: #f3f4f2;
+  --color-surface: #ffffff;
+  --color-subtle: #f7f8f6;
+  --color-line: #e5e8e3;
+  --color-line-strong: #d3d8d1;
+  --color-ink: #0c100d;
+  --color-ink-soft: #343b36;
+  --color-muted: #6b736d;
+  --color-faint: #9aa19c;
+
+  --color-brand-950: #062a1c;
+  --color-brand-900: #0a3d2a;
+  --color-brand-800: #0c5437;
+  --color-brand-700: #0e6b46;
+  --color-brand-600: #128050;
+  --color-brand-500: #1b9a62;
+  --color-brand-300: #8fd3ae;
+  --color-brand-200: #c2e8d2;
+  --color-brand-100: #def3e6;
+  --color-brand-50: #eff9f2;
+
+  --color-danger-700: #b42318;
+  --color-danger-600: #d92d20;
+  --color-danger-100: #fde7e4;
+  --color-danger-50: #fef3f2;
+  --color-warn-700: #a15c07;
+  --color-warn-100: #fdf0d2;
+  --color-warn-50: #fffaeb;
+  --color-info-700: #1d4ed8;
+  --color-info-100: #dbe7fe;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-card: 16px;
+  --shadow-card: 0 1px 2px rgb(12 16 13 / 0.04);
+  --shadow-pop: 0 12px 32px -8px rgb(12 16 13 / 0.18), 0 2px 6px rgb(12 16 13 / 0.06);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-brand-200);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility hero-card {
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgb(27 154 98 / 0.55) 0%, transparent 55%),
+    linear-gradient(135deg, var(--color-brand-900) 0%, var(--color-brand-700) 100%);
 }
